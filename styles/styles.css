@@ -1,0 +1,109 @@
+*{
+    box-sizing: border-box;
+    margin: 0;
+}
+html{
+    /*display: flex;*/
+    /*justify-content: center;*/
+    /*align-items: center;*/
+    /*height: 100%;*/
+}
+body{
+    /*height: 97vh;*/
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: cadetblue;
+    background-color: #8553ec;
+}
+#hide{
+    z-index: 2;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+#hideButton{
+    width: auto;
+    opacity: 0.3;
+}
+#main{
+    z-index: 1;
+    width: 220px;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+#main > *{
+    margin: 10px;
+}
+.operations{
+    background-color: rgba(248,248,255,0.5);
+    /*padding: 5px 0;*/
+    border-radius: 10px;
+}
+button, input, .wrapper, select{
+    height: 40px;
+    border-radius: 10px;
+}
+button{
+    width: 200px;
+    padding: 10px 0;
+    background-color: burlywood;
+}
+input, select{
+    width: 100px;
+}
+input[type=checkbox]{
+    height: 30px;
+    width: 30px;
+}
+.inputWrap{
+/*#inputImage, #inputDots{*/
+    position: relative;
+}
+input[type=file]{
+    width: 200px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    z-index: 10;
+}
+#canvases{
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+canvas{
+    position: absolute;
+    border: 1px solid lightgray;
+}
+#relC{
+    z-index: 1;
+}
+#algC{
+    z-index: 2;
+}
+.wrapper{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.we1{
+    text-align: center;
+    flex-grow: 2;
+}
+.we2{
+    flex-grow: 1;
+}
+.wrapper2{
+    width: 100%;
+}
+.disabled{
+    pointer-events: none;
+    opacity: 0.4;
+    /*background-color: #ff0000;*/
+}

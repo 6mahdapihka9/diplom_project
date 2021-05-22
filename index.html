@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Title</title>
+        <link rel="stylesheet" type="text/css" href="styles/styles.css">
+
+        <script type="text/javascript" src="scripts/docsFuncs.js" defer></script>
+        <script type="text/javascript" src="scripts/globalVars.js" defer></script>
+        <script type="text/javascript" src="scripts/basicFunctions.js" defer></script>
+        <script type="text/javascript" src="scripts/classes.js" defer></script>
+        <script type="text/javascript" src="scripts/funcs.js" defer></script>
+        <script type="text/javascript" src="scripts/script.js" defer></script>
+    </head>
+    <body>
+
+        <div id="canvases">
+            <canvas id='relC'></canvas>
+            <canvas id='algC'></canvas>
+        </div>
+        <div id="hide">
+            <button id="hideButton">Hide interface</button>
+        </div>
+
+        <div id="main">
+
+            <div id="clearButton" class="operations">
+                <button id="clear">Clear</button>
+            </div>
+
+            <div id="inputImage" class="operations">
+                <div class="inputWrap">
+                    <input type="file" onchange="inputImage(this)">
+                    <button>Input image</button>
+                </div>
+                <div class="inputWrap">
+                    <input type="file" onchange="inputRelief(this)">
+                    <button>Input relief</button>
+                </div>
+            </div>
+
+            <div id="prepare" class="operations">
+                <div class="wrapper">
+                    <label class="we1">Accuracy</label>
+                    <input id="accuracy" type="text" onchange="changeAccuracy(this)" value="1">
+                </div>
+                <button id="cropSmooth" onclick="cropSmooth()">Crop/Smooth</button>
+            </div>
+
+            <div id="triangulation" class="operations">
+                <button onclick="triangulation()">Triangulation</button>
+            </div>
+
+            <div id="exportReliefDiv" class="operations">
+                <a id="exportRelief">
+                    <button onclick="reliefExport()">Export relief</button>
+                </a>
+            </div>
+
+            <div id="inputDots" class="operations">
+                <div class="inputWrap">
+                    <input type="file" onchange="inputDots(this)">
+                    <button>Input dots by file</button>
+                </div>
+                <div class="wrapper">
+                    <label class="we1">Input dots by yourself</label>
+                    <input id="allowInput" type="checkbox" onchange="allowInput(this)">
+                </div>
+                <div class="wrapper">
+                    <label class="we1">Z =</label>
+                    <input id="z" type="text" onchange="changeZOfInput(this)" value="10">
+                </div>
+            </div>
+
+            <div id="buildGlobalSphere" class="operations">
+                <button onclick="buildGlobalSphere()">Build global sphere</button>
+            </div>
+
+            <div id="buildManySpheres" class="operations">
+                <div class="wrapper">
+                    <label class="we1">Radius</label>
+                    <input id="radius" type="text" onchange="changeRadius(this)" value="50">
+                </div>
+                <button onclick="buildManySpheres()">Build many spheres</button>
+            </div>
+
+            <div id="checkPath" class="operations">
+                <div class="wrapper">
+                    <label class="we1">Dot 1</label>
+                    <select id="dot1">
+                    </select>
+                </div>
+                <div class="wrapper">
+                    <label class="we1">Dot 2</label>
+                    <select id="dot2">
+                    </select>
+                </div>
+                <button onclick="checkPath()">Check path</button>
+            </div>
+        </div>
+<!--        <canvas id='c'></canvas>-->
+<!--        <script>-->
+<!--            let c = document.getElementById('c');-->
+<!--            let gl = c.getContext('webgl') || c.getContext("experimental-webgl");-->
+<!--            gl.clearColor(0,0,0.8,1);-->
+<!--            gl.clear(gl.COLOR_BUFFER_BIT);-->
+<!--        </script>-->
+    </body>
+</html>

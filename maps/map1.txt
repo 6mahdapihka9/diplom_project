@@ -1,0 +1,17 @@
+{
+    lvl: 0,
+    vertexes: [],
+    platos: [{
+                 lvl: 0,
+                 vertexes: [],
+                 platos: [],
+                 spikes: []
+             },
+             {
+                 lvl: 0,
+                 vertexes: [],
+                 platos: [],
+                 spikes: []
+             }],
+    spikes: []
+}
