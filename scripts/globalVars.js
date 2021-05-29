@@ -51,7 +51,6 @@ const clear = ()=> {
     smallR = 50;
     inputedRelief = false;
 
-    //TODO
     //set default values to inputs
     getById('imgBlock').hidden = false;
     getById('exportByDefault').checked = true;
@@ -70,7 +69,6 @@ const clear = ()=> {
 
 
     //disable all buttons except clear, import image, import relief
-
     Array.from(document.getElementsByClassName("operations"))
         .map(op => {op.classList.remove("disabled")});
 
@@ -82,6 +80,7 @@ const clear = ()=> {
 //Initiation
 (()=>{
     clear();
+
     getById("clear").onclick = ()=>{
         clear();
     };
@@ -90,11 +89,11 @@ const clear = ()=> {
     };
     getById("showTipsButton").onclick = ()=>{
         getById("tips").hidden = !getById("tips").hidden;
-
+        getById("info").hidden = (!getById("info").hidden)? true : false;
     };
     getById("showInfoButton").onclick = ()=>{
         getById("info").hidden = !getById("info").hidden;
-
+        getById("tips").hidden = (!getById("tips").hidden)? true : false;
     };
 
 })();
