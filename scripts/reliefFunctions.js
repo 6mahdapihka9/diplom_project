@@ -1,6 +1,6 @@
 //INPUT IMAGE
 const inputImage = (input)=>{
-
+console.log("dick");
     //try load image
     try {
         let file = input.files[0];
@@ -63,7 +63,8 @@ const loadImg = (_src)=>{
             return;
         }
 
-        getById('imgBlock').hidden = !getById('imgBlock').hidden;
+        getById('imgBlock').hidden = true;
+        getById('dotsBlock').hidden = false;
 
         Array.from(document.getElementsByClassName("operations"))
             .filter(op => op.id!=="clearButton" && op.id!=="exportReliefDiv" && op.id!=="inputDots")
