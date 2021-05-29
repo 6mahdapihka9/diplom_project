@@ -5,85 +5,146 @@
         <title>Title</title>
         <link rel="stylesheet" type="text/css" href="styles/styles.css">
 
-        <script type="text/javascript" src="scripts/docsFuncs.js" defer></script>
+        <script type="text/javascript" src="scripts/documentsFunctions.js" defer></script>
         <script type="text/javascript" src="scripts/globalVars.js" defer></script>
         <script type="text/javascript" src="scripts/basicFunctions.js" defer></script>
         <script type="text/javascript" src="scripts/classes.js" defer></script>
-        <script type="text/javascript" src="scripts/funcs.js" defer></script>
+        <script type="text/javascript" src="scripts/reliefFunctions.js" defer></script>
+        <script type="text/javascript" src="scripts/algorithmsFunctions.js" defer></script>
         <script type="text/javascript" src="scripts/script.js" defer></script>
     </head>
-    <body>
+    <body onload="alert('Read the tips before getting started.')">
 
         <div id="canvases">
             <canvas id='relC'></canvas>
             <canvas id='algC'></canvas>
         </div>
-        <div id="hide">
-            <button id="hideButton">Hide interface</button>
+
+        <div id="rightSideBarTools">
+            <button id="hideInterfaceButton">Hide interface</button>
+            <button id="showTipsButton">Show tips</button>
+            <button id="showInfoButton">Show info</button>
         </div>
 
         <div id="main">
-
+            <!--                clear              -->
             <div id="clearButton" class="operations">
                 <button id="clear">Clear</button>
             </div>
 
+
+            <!--                inputImage              -->
             <div id="inputImage" class="operations">
+                <span class="minimizer" onclick="getById('imgBlock').hidden = !getById('imgBlock').hidden">Minimize image setting fields</span>
+                <div id="imgBlock">
+
+
+                    <div class="wrapper">
+                        <label class="we1">Export relief by default</label>
+                        <input id="exportByDefault" type="checkbox" checked>
+                    </div>
+
+                    <div class="wrapper">
+                        <label class="we1">Accuracy</label>
+                        <input id="accuracy" type="text" value="1" title="if value of this field is NaN or negative, 1 will be used as default value">
+                    </div>
+
+                    <div class="we1">
+                        <h4>Evaluation property</h4>
+                        <div class="wrapper">
+                            <label class="we1">Brightness</label>
+                            <input name="typeToEvaluate" type="radio" value="Brightness" checked>
+                        </div>
+
+                        <div class="wrapper">
+                            <label class="we1">Red</label>
+                            <input name="typeToEvaluate" type="radio" value="Red" >
+                        </div>
+
+                        <div class="wrapper">
+                            <label class="we1">Green</label>
+                            <input name="typeToEvaluate" type="radio" value="Green" >
+                        </div>
+
+                        <div class="wrapper">
+                            <label class="we1">Blue</label>
+                            <input name="typeToEvaluate" type="radio" value="Blue" >
+                        </div>
+                    </div>
+
+                </div>
                 <div class="inputWrap">
                     <input type="file" onchange="inputImage(this)">
                     <button>Input image</button>
                 </div>
+            </div>
+
+            <!--                inputRelief             -->
+            <div id="inputRelief" class="operations">
                 <div class="inputWrap">
                     <input type="file" onchange="inputRelief(this)">
                     <button>Input relief</button>
                 </div>
             </div>
 
-            <div id="prepare" class="operations">
-                <div class="wrapper">
-                    <label class="we1">Accuracy</label>
-                    <input id="accuracy" type="text" onchange="changeAccuracy(this)" value="1">
-                </div>
-                <button id="cropSmooth" onclick="cropSmooth()">Crop/Smooth</button>
-            </div>
 
-            <div id="triangulation" class="operations">
-                <button onclick="triangulation()">Triangulation</button>
-            </div>
 
+            <!--                exportReliefDiv             -->
             <div id="exportReliefDiv" class="operations">
                 <a id="exportRelief">
                     <button onclick="reliefExport()">Export relief</button>
                 </a>
             </div>
 
+
+            <!--                inputDots             -->
             <div id="inputDots" class="operations">
+
+                <span class="minimizer" onclick="getById('dotsBlock').hidden = !getById('dotsBlock').hidden">Minimize dots setting fields</span>
+                <div id="dotsBlock" hidden>
+                    <div class="wrapper">
+                        <label class="we1">Input dots by yourself</label>
+                        <input id="allowInput" type="checkbox" onchange="allowInput(this)" checked>
+                    </div>
+
+                    <hr>
+
+                    <div id="unnecessaryCoords">
+                        <div class="wrapper">
+                            <label class="we1">X =</label>
+                            <input id="x" type="text" value="10">
+                        </div>
+
+                        <div class="wrapper">
+                            <label class="we1">Y =</label>
+                            <input id="y" type="text" value="10">
+                        </div>
+                    </div>
+
+                    <div class="wrapper">
+                        <label class="we1">Z =</label>
+                        <input id="z" type="text" value="10">
+                    </div>
+                    <!--ToDo-->
+                    <button onclick="">Add dot</button>
+
+                    <hr>
+                </div>
                 <div class="inputWrap">
                     <input type="file" onchange="inputDots(this)">
                     <button>Input dots by file</button>
                 </div>
-                <div class="wrapper">
-                    <label class="we1">Input dots by yourself</label>
-                    <input id="allowInput" type="checkbox" onchange="allowInput(this)">
-                </div>
-                <div class="wrapper">
-                    <label class="we1">Z =</label>
-                    <input id="z" type="text" onchange="changeZOfInput(this)" value="10">
-                </div>
+
             </div>
 
+
+            <!--                buildGlobalSphere             -->
             <div id="buildGlobalSphere" class="operations">
                 <button onclick="buildGlobalSphere()">Build global sphere</button>
             </div>
 
-            <div id="buildManySpheres" class="operations">
-                <div class="wrapper">
-                    <label class="we1">Radius</label>
-                    <input id="radius" type="text" onchange="changeRadius(this)" value="50">
-                </div>
-                <button onclick="buildManySpheres()">Build many spheres</button>
-            </div>
 
+            <!--                checkPath             -->
             <div id="checkPath" class="operations">
                 <div class="wrapper">
                     <label class="we1">Dot 1</label>
@@ -98,12 +159,57 @@
                 <button onclick="checkPath()">Check path</button>
             </div>
         </div>
-<!--        <canvas id='c'></canvas>-->
-<!--        <script>-->
-<!--            let c = document.getElementById('c');-->
-<!--            let gl = c.getContext('webgl') || c.getContext("experimental-webgl");-->
-<!--            gl.clearColor(0,0,0.8,1);-->
-<!--            gl.clear(gl.COLOR_BUFFER_BIT);-->
-<!--        </script>-->
+
+
+        <div id="tips" hidden>
+            <h3>Add points to the canvas:</h3>
+            <p>
+                There are three ways to add points to the canvas - manually, check whether the "Apply coordinates manually" button is blue,
+                and if so, just click LMB on the canvas, or add a file with coordinates.
+            </p>
+            <p>
+                Note: Coordinates must be integers, contain no characters other than numbers,
+                be written in spaces with pairs and each coordinate pair on a new line. Example:
+            </p>
+            <p>213 355 64</p>
+            <P>124 566 23</P>
+            <p>7347 12 10</p>
+            <p>87 643 56</p>
+            <h3>Add an image to the canvas</h3>
+            <p>
+                There are two ways to add an image to a canvas: add a file from the device or via a link.
+            </p>
+            <h3>Image erasing</h3>
+            <p>
+                The "Delete Image" button deletes the current image from the canvas and makes its background white.
+                The "Cancel" button cancels the last action taken by the user: adding points or adding an image.
+                The "Clear All" button deletes all data about points, circles, and added images.
+            </p>
+            <h3>Build cirle</h3>
+            <p>
+                It is possible to choose which circles will be constructed: general and / or many with a fixed radius.
+                It is also possible to enter a radius in the text box. The radius must be an integer, using only numbers and no spaces.
+            </p>
+            <h3>Manipulation of the canvas</h3>
+            <p>
+                Implemented functions to increase / decrease objects depicted on the canvas, as well as move these objects.
+                To move, press the button from the image of the arrows in all directions, and then, pressing the LMB when the cursor is on the canvas,
+                drag the cursor in any direction.
+            </p>
+            <h3>Statistics</h3>
+            <p>
+                Only after building circles is it possible to display statistics on the screen, hide it or save it to a file.
+            </p>
+        </div>
+        <div id="info" hidden>
+            <p>Contact info:</p>
+            <p>Tel: +38(050)152-43-65</p>
+            <p>email: kulesh.oleksandr@chnu.edu.ua</p>
+            <p>Telegram: @zul_jin</p>
+            <p>Supervisor:</p>
+            <p>Candidate of Physical and Mathematical Sciences, Associate Professor</p>
+            <p>Rusnak Mykolay Andriyovych</p>
+        </div>
+
     </body>
 </html>
