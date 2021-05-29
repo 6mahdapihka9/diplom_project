@@ -53,9 +53,27 @@ const clear = ()=> {
 
     //TODO
     //set default values to inputs
+    getById('imgBlock').hidden = false;
+    getById('exportByDefault').checked = true;
+    getById('accuracy').value = 1;
+
+    getById('dotsBlock').hidden = true;
+    getById('allowInput').checked = true;
+
+    getById('x').value = getById('y').value = getById('z').value = 10;
+
+    getById("dot1").innerHTML = "";
+    getById("dot2").innerHTML = "";
+
+    getById("info").hidden = true;
+    getById("tips").hidden = true;
 
 
-    //disable all buttons except clear and load image
+    //disable all buttons except clear, import image, import relief
+
+    Array.from(document.getElementsByClassName("operations"))
+        .map(op => {op.classList.remove("disabled")});
+
     Array.from(document.getElementsByClassName("operations"))
         .filter(op => op.id!=="clearButton" && op.id!=="inputImage" && op.id !=="inputRelief")
         .map(op => {op.classList.add("disabled")});

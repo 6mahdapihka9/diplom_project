@@ -113,9 +113,6 @@ const triangulation = ()=>{
     let pixels = relCtx.getImageData(0,0, relC.width, relC.height);
     let data = pixels.data;
 
-
-
-
     Dots = [];
     Triangles = [];
     maxHeight = 0;
@@ -180,10 +177,10 @@ const drawAllTriangles = ()=>{
     relCtx.fillStyle = "white";
     relCtx.fillRect(0,0, relC.width, relC.height);
 
-    for (let i in Triangles)
-        for (let j in Triangles[i])
-            for (let t in Triangles[i][j])
-                drawTriangle(Triangles[i][j][t], true);
+    for (let i of Triangles)
+        for (let j of i)
+            for (let t of j)
+                drawTriangle(t, true);
 };
 
 
