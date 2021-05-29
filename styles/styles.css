@@ -18,18 +18,32 @@ body{
     background-color: cadetblue;
     background-color: #8553ec;
 }
-#hide{
+#rightSideBarTools{
+
+    width: 100px;
     z-index: 2;
     position: absolute;
     top: 0;
     right: 0;
 }
-#hideButton{
-    width: auto;
-    opacity: 0.3;
+#hideInterfaceButton, #showTipsButton, #showInfoButton{
+    width: 100px;
+    /*opacity: 0.3;*/
+}
+#info, #tips{
+    max-height: 97vh;
+    color: #ffffff;
+    width: 60vw;
+    position: absolute;
+    left: 20vw;
+    bottom: 0;
+    z-index: 100;
+}
+#tips{
+    overflow-y: scroll;
 }
 #main{
-    z-index: 1;
+    z-index: 10;
     width: 220px;
     position: absolute;
     top: 0;
@@ -55,7 +69,7 @@ button{
 input, select{
     width: 100px;
 }
-input[type=checkbox]{
+input[type=checkbox], input[type=radio]{
     height: 30px;
     width: 30px;
 }
@@ -105,5 +119,15 @@ canvas{
 .disabled{
     pointer-events: none;
     opacity: 0.4;
-    /*background-color: #ff0000;*/
+}
+.minimizer{
+    font-size: smaller;
+    cursor: pointer;
+    padding: 0 10px;
+    width: 100%;
+    /*opacity: 0.5;*/
+    pointer-events: auto;
+}
+hr {
+    margin: 5px 0;
 }
