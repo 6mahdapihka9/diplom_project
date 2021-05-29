@@ -7,7 +7,8 @@ let algCtx = algC.getContext("2d");
 
 
 //IMAGE variables
-let IMAGE, PIXELS, imgW, imgH;
+let IMAGE, PIXELS, imgW, imgH, imgName;
+
 
 //Triangles variables
 let accuracy = 1;
@@ -16,9 +17,6 @@ let minHeight = 256;
 let scaledMaxH, scaledMinH;
 let Dots = [], Triangles = [], GlobalSphere = null, Spheres = [];
 let DTC = [];
-let allowToInputDotsByCursor = false;
-let zOfInputedDot = 10;
-let inputedRelief = false;
 
 
 //algorithm variables

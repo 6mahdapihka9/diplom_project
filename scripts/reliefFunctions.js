@@ -4,6 +4,7 @@ console.log("dick");
     //try load image
     try {
         let file = input.files[0];
+        console.log(imgName = file.name);
         let reader = new FileReader();
         let src = "";
         reader.readAsDataURL(file);
@@ -63,16 +64,10 @@ const loadImg = (_src)=>{
             return;
         }
 
-        getById('imgBlock').hidden = true;
-        getById('dotsBlock').hidden = false;
 
-        Array.from(document.getElementsByClassName("operations"))
-            .filter(op => op.id!=="clearButton" && op.id!=="exportReliefDiv" && op.id!=="inputDots")
-            .map(op => {op.classList.add("disabled")});
-
-        Array.from(document.getElementsByClassName("operations"))
-            .filter(op => op.id=="clearButton" || op.id=="exportReliefDiv" || op.id=="inputDots")
-            .map(op => {op.classList.remove("disabled")});
+        disableInputRelief();
+        if (getById("exportByDefault").checked)
+            getById("exportReliefButton").click();
     }
     img.onerror = ()=>{
         alert("Loading image error!");
@@ -80,6 +75,19 @@ const loadImg = (_src)=>{
     }
 };
 
+const disableInputRelief = ()=>{
+
+    getById('imgBlock').hidden = true;
+    getById('dotsBlock').hidden = false;
+
+    Array.from(document.getElementsByClassName("operations"))
+        .filter(op => op.id!=="clearButton" && op.id!=="exportReliefDiv" && op.id!=="inputDots")
+        .map(op => {op.classList.add("disabled")});
+
+    Array.from(document.getElementsByClassName("operations"))
+        .filter(op => op.id=="clearButton" || op.id=="exportReliefDiv" || op.id=="inputDots")
+        .map(op => {op.classList.remove("disabled")});
+};
 
 
 //CROP image
@@ -193,39 +201,24 @@ const inputRelief = (input)=>{
     let reader = new FileReader();
     reader.readAsText(file);
     reader.onload = function() {
-        Triangles = [];
-        maxHeight = 0;
-        minHeight = 256;
-        Dots = JSON.parse(reader.result);
+        let relief = JSON.parse(reader.result);
 
-        relC.width = Dots[0][Dots[0].length-1].x;
-        relC.height = Dots[Dots.length-1][0].y;
+        // console.log(relief.accuracy, relief.width, relief.height, relief.Triangles);
 
-        for (let i = 0; i < relC.height; i++) {
-            if (i < relC.height-1)
-                Triangles[i] = [];
+        maxHeight = relief.maxHeight;
+        minHeight = relief.minHeight;
+        accuracy = relief.accuracy;
+        Triangles = relief.Triangles;
+        algC.width = relC.width = imgW = relief.width;
+        algC.height = relC.height = imgH = relief.height;
 
-            for (let j = 0; j < relC.width; j++) {
-                let h = Dots[i][j].z;
-                maxHeight = (h > maxHeight) ? h : maxHeight;
-                minHeight = (h < minHeight) ? h : minHeight;
-            }
-        }
-        creationOfRelief();
     }
     reader.onloadend = () => {
 
-
-        algC.width = relC.width = imgW = Dots[0][Dots[0].length-1].x * accuracy;
-        algC.height = relC.height = imgH = Dots[Dots.length-1][0].y * accuracy;
-
-
-
         drawAllTriangles();
 
-        getById("prepare").classList.remove("disabled");
-        getById("exportReliefDiv").classList.remove("disabled");
-        getById("inputDots").classList.remove("disabled");
+        disableInputRelief();
+
     };
     reader.onerror = function() {
         alert(reader.error);
@@ -237,10 +230,10 @@ const inputRelief = (input)=>{
 //EXPORT RELIEF
 const reliefExport = ()=>{
     if (Triangles !== []) {
-        let filename = "relief.txt";
-        let text = JSON.stringify(Dots, null, 4);
-        // let text = JSON.stringify(Triangles);
-        // console.log(Dots);
+        let width = relC.width, height = relC.height, filename = `relief of ${imgName} (acc = ${accuracy}).txt`;
+
+        let text = JSON.stringify({maxHeight, minHeight,accuracy, width, height, Triangles}, null, 4);
+
         let blob = new Blob([text], {type: 'text/plain'});
         let exp = getById("exportRelief");
         exp.download = filename;
@@ -248,13 +241,3 @@ const reliefExport = ()=>{
     }
 }
 
-
-//SUPPORTING FUNCTIONS
-//
-//func that get pixel from a middle of canvas
-// const getPixel = ()=>{
-//     let pixel = relCtx.getImageData(relC.width/2, relC.height/2, 1, 1);
-//     let data = pixel.data;
-//     let rgba = 'rgba(' + data[0] + ', ' + data[1] + ', ' + data[2] + ', ' + (data[3] / 255) + ')';
-//     console.log(rgba);
-// };

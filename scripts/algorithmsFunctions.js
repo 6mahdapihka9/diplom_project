@@ -1,12 +1,12 @@
+//TODO
+//проверить как оно добавляет точки
+//добавить в конструктор точек проверку на нахождение под поверхностью
+//изменить и проверить метод отрисовки точек (покрытых, непокрытых, под поверхностью
+//добвить ввод точек через кнопку
+//почистить методы отрисовки фигур (точки, треугольника, круга)
+
 
 //INPUT DOTS
-const allowInput = (doInputWithCursor)=>{
-    allowToInputDotsByCursor = doInputWithCursor.checked;
-};
-const changeZOfInput = (zInput)=>{
-    console.log(zInput.value);
-    zOfInputedDot = (+zInput.value > 0)? +zInput.value : zInput.value = 10;
-};
 const inputDots = (input)=>{
     let file = input.files[0];
     let reader = new FileReader();
@@ -40,16 +40,13 @@ const inputDots = (input)=>{
 const updateDotsInCheckPath = ()=>{
     let opsTxt = "";
     for (let d in DTC)
-        opsTxt += "<option value=" + d + ">" +
-            "("+DTC[d].x+";"+DTC[d].y+";"+DTC[d].z+")" +
-            "</option>";
+        opsTxt += `<option value=${d}>(${DTC[d].x};${DTC[d].y};${DTC[d].z})</option>`;
 
     getById("dot1").innerHTML = opsTxt;
     getById("dot2").innerHTML = opsTxt;
-    // getById("buildGlobalSphere").classList.remove("disabled");
-    [getById("buildGlobalSphere"),
-        getById("buildManySpheres"),
-        getById("checkPath")].map(el => el.classList.remove("disabled"));
+
+    [getById("buildGlobalSphere"), getById("checkPath")]
+        .map(el => el.classList.remove("disabled"));
 };
 algC.onmousedown = (e) => {
     if (allowToInputDotsByCursor) {
@@ -165,17 +162,9 @@ const buildGlobalSphere = ()=>{
 };
 
 
-//BUILD MAY SMALL SPHERES
-const changeRadius = (radiusInput)=>{
-    smallR = (+radiusInput.value > 1)? +radiusInput.value : radiusInput.value = 50;
-};
-const buildManySpheres = ()=>{
-
-};
-
-
 //CHECK PATH BETWEEN TWO DOTS
 const checkPath = ()=>{
+    //не совпадают ли выбраные точки
     let d1 = DTC[Array.from(getById("dot1").options)
             .filter(option => option.selected)
             .map(option => option.value)[0]],
@@ -194,11 +183,11 @@ const checkPath = ()=>{
                 let j = startD.y + ((i-startD.x)/(endD.x-startD.x))*(endD.y-startD.y);
                 // console.log(j, i, Math.floor(j / accuracy), Math.floor(i/ accuracy));
                 // console.log(Triangles[Math.floor(j / accuracy)][Math.floor(i / accuracy)]);
-                let TBlock = Triangles[Math.floor(j / accuracy)][Math.floor(i / accuracy)]
+                let TBlock = Triangles[Math.floor(j / accuracy)][Math.floor(i / accuracy)];
                 for (let t in TBlock){
                     // console.log(TBlock[t]);
                     drawTriangle(TBlock[t],true,"black");
-                    console.log(TBlock[t].simpleOperation(d1, d2));;
+                    console.log(TBlock[t].simpleOperation(d1, d2));
                 }
             }
 
@@ -223,10 +212,8 @@ const redraw = ()=>{
 
 
 const test = ()=>{
-    document.getElementsByName("typeToEvaluate").forEach((el)=>{
-        if (el.checked)
-            console.log(el.value);
-    });
+
+    console.log(new Dot(10, 10, -1000, true));
 };
 
 

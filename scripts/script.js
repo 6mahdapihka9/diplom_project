@@ -20,6 +20,17 @@
 //     <!--        </script>-->
 
 
+//SUPPORTING FUNCTIONS
+//
+//func that get pixel from a middle of canvas
+// const getPixel = ()=>{
+//     let pixel = relCtx.getImageData(relC.width/2, relC.height/2, 1, 1);
+//     let data = pixel.data;
+//     let rgba = 'rgba(' + data[0] + ', ' + data[1] + ', ' + data[2] + ', ' + (data[3] / 255) + ')';
+//     console.log(rgba);
+// };
+
+
 //triangles
 /*
 this.cramer = (_a, _b)=>{
