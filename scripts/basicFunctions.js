@@ -16,6 +16,7 @@ const determinant = (a11, a12, a13, a21, a22, a23, a31, a32, a33)=>{
     return a11*a22*a33 + a12*a23*a31 + a13*a21*a32
         - a13*a22*a31 - a12*a21*a33 - a11*a23*a32;
 }
+
 const drawTriangle = (t, fill, color)=>{
     relCtx.strokeStyle = "black";
     relCtx.beginPath();
@@ -24,85 +25,57 @@ const drawTriangle = (t, fill, color)=>{
     relCtx.lineTo(t.c.x*accuracy, t.c.y*accuracy);
     relCtx.lineTo(t.a.x*accuracy, t.a.y*accuracy);
     if (fill) {
-        relCtx.fillStyle = linerGrad(t.a, t.b, t.c);
+        relCtx.fillStyle = (color)? color : linerGrad(t.a, t.b, t.c) ;
 
-        if (color)
-            relCtx.fillStyle = color;
         relCtx.fill();
     } else
         relCtx.stroke();
     relCtx.closePath();
 };
-const drawLine = (a, b)=>{
-    algCtx.strokeStyle = "red";
+const drawAllTriangles = ()=>{
+    relCtx.fillStyle = "white";
+    relCtx.fillRect(0,0, relC.width, relC.height);
+    for (let i of Triangles)
+        for (let j of i)
+            for (let t of j)
+                drawTriangle(t, true);
+};
+const drawLine = (xs, ys, xe, ye, color)=>{
+    algCtx.strokeStyle = color;
     algCtx.beginPath();
-    algCtx.moveTo(a.x*accuracy, a.y*accuracy);
-    algCtx.lineTo(b.x*accuracy, b.y*accuracy);
+    algCtx.moveTo(xs, ys);
+    algCtx.lineTo(xe, ye);
     algCtx.stroke();
     algCtx.closePath();
 };
 
-const drawCircle = (x, y, r, fill, color, clear)=>{
-    if (color){
-        algCtx.strokeStyle = color;
-        algCtx.fillStyle = color;
-    } else {
-        algCtx.strokeStyle = "black";
-        algCtx.fillStyle = "green";
-    }
+const drawCircle = (x, y, r, color)=>{
+    algCtx.strokeStyle = color;
     algCtx.beginPath();
-    if (clear){
-        algCtx.beginPath();
-        algCtx.arc(x , y , r, 0, Math.PI * 2, true);
-    } else {
-        // ctx.moveTo(x * accuracy, y * accuracy);
-        algCtx.beginPath();
-        algCtx.arc(x * accuracy, y * accuracy, r, 0, Math.PI * 2, true);
-    }
-    if (fill)
-        algCtx.fill();
-    else
-        algCtx.stroke();
+    algCtx.arc(x , y , r, 0, Math.PI * 2, true);
+    algCtx.stroke();
     algCtx.closePath();
 };
 const drawDot = (d)=>{
-    if(d.covered){
-
-        algCtx.fillStyle = "green";
-        algCtx.beginPath();
-        algCtx.arc(d.x * accuracy, d.y * accuracy, 2, 0, Math.PI * 2, true);
-        algCtx.stroke();
-        algCtx.closePath();
-
+    if(d.covered && !d.underSurface){
+        drawCircle(d.x, d.y, 2, "black");
     } else {
-
-        algCtx.strokeStyle = "black";
-        algCtx.beginPath();
-        algCtx.moveTo(d.x * accuracy - 2, d.y * accuracy - 2);
-        algCtx.lineTo(d.x * accuracy + 2, d.y * accuracy + 2);
-        algCtx.stroke();
-        algCtx.closePath();
-
-        algCtx.beginPath();
-        algCtx.moveTo(d.x * accuracy + 2, d.y * accuracy - 2);
-        algCtx.lineTo(d.x * accuracy - 2, d.y * accuracy + 2);
-        algCtx.stroke();
-        algCtx.closePath();
-
+        drawLine(d.x - 2, d.y - 2, d.x + 2, d.y + 2, "black");
+        drawLine(d.x + 2, d.y - 2, d.x - 2, d.y + 2, "black");
     }
 };
 const drawDotsToCover = ()=>{
     if (DTC.length > 0)
-        for (let d in DTC)
-            drawDot(DTC[d]);
-            // drawCircle(DTC[d].x, DTC[d].y, 2,null, "black", true);
-
+        for (let d of DTC)
+            drawDot(d);
 };
 const drawGlobalSphere = ()=>{
-    drawCircle(Cx, Cy, 1,null, "blue", true);
-    drawCircle(Cx, Cy, R,null, "blue", true);
-};
+    drawCircle(GS.x, GS.y, 2, "brown");
+    drawLine(GS.x - 3, GS.y - 3, GS.x + 3, GS.y + 3, "brown");
+    drawLine(GS.x + 3, GS.y - 3, GS.x - 3, GS.y + 3, "brown");
 
+    drawCircle(GS.x, GS.y, GS.r, "blue");
+};
 
 //GRADIENT
 const linerGrad = (a,b,c)=>{
@@ -158,7 +131,6 @@ const linerGrad = (a,b,c)=>{
 const createRGBA = (z)=>{
     let rgbaTxt = "rgba(", h, val = 0;
     if (scaledMinH && scaledMinH < 0){
-        //TODO
         //scaling for above sealevel and under sealevel
         h = (maxHeight-minHeight)/4;
         if (z-minHeight >= 0 && z-minHeight < h){
@@ -186,7 +158,7 @@ const createRGBA = (z)=>{
 
             rgbaTxt += Math.floor(((z-minHeight)/h)*255) + ",255,0";
 
-        // } else if (z-minHeight >= h && z-minHeight <= 2*h){
+            // } else if (z-minHeight >= h && z-minHeight <= 2*h){
         } else if (z-minHeight >= h ){
             rgbaTxt += "255," + Math.floor(255-((z-minHeight-h)/h)*255) + ",0";
 
@@ -196,7 +168,3 @@ const createRGBA = (z)=>{
 
     return rgbaTxt + ",1)";
 };
-
-
-
-

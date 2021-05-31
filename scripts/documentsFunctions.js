@@ -4,5 +4,3 @@ const getById = (str)=>{
 const crEl = (str)=>{
     return document.createElement(str);
 };
-
-

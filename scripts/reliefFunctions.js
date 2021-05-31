@@ -1,18 +1,13 @@
 //INPUT IMAGE
 const inputImage = (input)=>{
-console.log("dick");
+
     //try load image
     try {
-        let file = input.files[0];
-        let reader = new FileReader();
-        let src = "";
+        let file = input.files[0], reader = new FileReader(), src = "";
+        imgName = file.name;
         reader.readAsDataURL(file);
         reader.onload = () => { if (typeof(reader.result) === "string") src = reader.result; };
-        reader.onloadend = () => {
-            loadImg(src);
-
-
-        };
+        reader.onloadend = () => { loadImg(src); };
         reader.onerror = () => { alert(reader.error); };
     } catch (e) {
         alert(e);
@@ -30,11 +25,13 @@ const loadImg = (_src)=>{
             return;
         algC.width = relC.width = imgW = img.width;
         algC.height = relC.height = imgH = img.height;
+        getById("canvasInfo").innerHTML = `<p>canvas parameters:</p><p>width: ${relC.width}</p><p>height: ${relC.height}</p>`;
 
         relCtx.drawImage(img, 0, 0, relC.width, relC.height);
 
         IMAGE = img;
 
+        alert("The operation may take some time, do not reload the page!");
 
         try {
             triangulation();
@@ -56,6 +53,7 @@ const loadImg = (_src)=>{
 
         try {
             drawAllTriangles();
+
         } catch (e) {
             alert(e);
             console.log( e );
@@ -63,16 +61,10 @@ const loadImg = (_src)=>{
             return;
         }
 
-        getById('imgBlock').hidden = true;
-        getById('dotsBlock').hidden = false;
 
-        Array.from(document.getElementsByClassName("operations"))
-            .filter(op => op.id!=="clearButton" && op.id!=="exportReliefDiv" && op.id!=="inputDots")
-            .map(op => {op.classList.add("disabled")});
-
-        Array.from(document.getElementsByClassName("operations"))
-            .filter(op => op.id=="clearButton" || op.id=="exportReliefDiv" || op.id=="inputDots")
-            .map(op => {op.classList.remove("disabled")});
+        disableInputRelief();
+        if (getById("exportByDefault").checked)
+            getById("exportReliefButton").click();
     }
     img.onerror = ()=>{
         alert("Loading image error!");
@@ -80,6 +72,19 @@ const loadImg = (_src)=>{
     }
 };
 
+const disableInputRelief = ()=>{
+
+    getById('imgBlock').hidden = true;
+    getById('dotsBlock').hidden = false;
+
+    Array.from(document.getElementsByClassName("operations"))
+        .filter(op => op.id!=="clearButton" && op.id!=="exportReliefDiv" && op.id!=="inputDots")
+        .map(op => {op.classList.add("disabled")});
+
+    Array.from(document.getElementsByClassName("operations"))
+        .filter(op => op.id=="clearButton" || op.id=="exportReliefDiv" || op.id=="inputDots")
+        .map(op => {op.classList.remove("disabled")});
+};
 
 
 //CROP image
@@ -91,16 +96,10 @@ const crop = ()=>{
     else
         accuracy = htmlEl.value = 1;
 
+    algC.width = relC.width = imgW - imgW % accuracy + 1;
+    algC.height = relC.height = imgH - imgH % accuracy + 1;
 
-    if (imgW - imgW % accuracy + 1 <= imgW)
-        algC.width = relC.width = imgW - imgW % accuracy + 1;
-    else
-        algC.width = relC.width = imgW - imgW % accuracy + 1 - accuracy;
-
-    if (imgH - imgH % accuracy + 1 <= imgH)
-        algC.height = relC.height = imgH - imgH % accuracy + 1;
-    else
-        algC.height = relC.height = imgH - imgH % accuracy + 1 - accuracy;
+    getById("canvasInfo").innerHTML = `<p>canvas parameters:</p><p>width: ${relC.width}</p><p>height: ${relC.height}</p>`
 
     relCtx = relC.getContext("2d");
     relCtx.drawImage(IMAGE, 0, 0, relC.width, relC.height);
@@ -173,18 +172,6 @@ const creationOfRelief = ()=>{
             ];
         }
 };
-const drawAllTriangles = ()=>{
-
-    relCtx.fillStyle = "white";
-    relCtx.fillRect(0,0, relC.width, relC.height);
-
-    for (let i of Triangles)
-        for (let j of i)
-            for (let t of j)
-                drawTriangle(t, true);
-};
-
-
 
 //INPUT RELIEF
 const inputRelief = (input)=>{
@@ -193,68 +180,39 @@ const inputRelief = (input)=>{
     let reader = new FileReader();
     reader.readAsText(file);
     reader.onload = function() {
-        Triangles = [];
-        maxHeight = 0;
-        minHeight = 256;
-        Dots = JSON.parse(reader.result);
+        let relief = JSON.parse(reader.result);
 
-        relC.width = Dots[0][Dots[0].length-1].x;
-        relC.height = Dots[Dots.length-1][0].y;
+        maxHeight = relief.maxHeight;
+        minHeight = relief.minHeight;
+        accuracy = relief.accuracy;
+        Triangles = relief.Triangles;
+        algC.width = relC.width = imgW = relief.width;
+        algC.height = relC.height = imgH = relief.height;
 
-        for (let i = 0; i < relC.height; i++) {
-            if (i < relC.height-1)
-                Triangles[i] = [];
-
-            for (let j = 0; j < relC.width; j++) {
-                let h = Dots[i][j].z;
-                maxHeight = (h > maxHeight) ? h : maxHeight;
-                minHeight = (h < minHeight) ? h : minHeight;
-            }
-        }
-        creationOfRelief();
+        getById("canvasInfo").innerHTML = `<p>canvas parameters:</p><p>width: ${relC.width}</p><p>height: ${relC.height}</p>`
     }
     reader.onloadend = () => {
-
-
-        algC.width = relC.width = imgW = Dots[0][Dots[0].length-1].x * accuracy;
-        algC.height = relC.height = imgH = Dots[Dots.length-1][0].y * accuracy;
-
-
-
         drawAllTriangles();
-
-        getById("prepare").classList.remove("disabled");
-        getById("exportReliefDiv").classList.remove("disabled");
-        getById("inputDots").classList.remove("disabled");
+        disableInputRelief();
     };
     reader.onerror = function() {
         alert(reader.error);
     };
 };
 
-
-
 //EXPORT RELIEF
 const reliefExport = ()=>{
     if (Triangles !== []) {
-        let filename = "relief.txt";
-        let text = JSON.stringify(Dots, null, 4);
-        // let text = JSON.stringify(Triangles);
-        // console.log(Dots);
+
+        alert("The operation may take some time, do not reload the page!");
+
+        let width = relC.width, height = relC.height, filename = `relief of ${imgName} (acc = ${accuracy}).txt`;
+
+        let text = JSON.stringify({maxHeight, minHeight,accuracy, width, height, Triangles}, null, 4);
+
         let blob = new Blob([text], {type: 'text/plain'});
         let exp = getById("exportRelief");
         exp.download = filename;
         exp.href = window.URL.createObjectURL(blob);
     }
 }
-
-
-//SUPPORTING FUNCTIONS
-//
-//func that get pixel from a middle of canvas
-// const getPixel = ()=>{
-//     let pixel = relCtx.getImageData(relC.width/2, relC.height/2, 1, 1);
-//     let data = pixel.data;
-//     let rgba = 'rgba(' + data[0] + ', ' + data[1] + ', ' + data[2] + ', ' + (data[3] / 255) + ')';
-//     console.log(rgba);
-// };

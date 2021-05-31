@@ -2,14 +2,7 @@
     box-sizing: border-box;
     margin: 0;
 }
-html{
-    /*display: flex;*/
-    /*justify-content: center;*/
-    /*align-items: center;*/
-    /*height: 100%;*/
-}
 body{
-    /*height: 97vh;*/
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -19,7 +12,6 @@ body{
     background-color: #8553ec;
 }
 #rightSideBarTools{
-
     width: 100px;
     z-index: 2;
     position: absolute;
@@ -28,7 +20,6 @@ body{
 }
 #hideInterfaceButton, #showTipsButton, #showInfoButton{
     width: 100px;
-    /*opacity: 0.3;*/
 }
 #info, #tips{
     max-height: 97vh;
@@ -54,7 +45,6 @@ body{
 }
 .operations{
     background-color: rgba(248,248,255,0.5);
-    /*padding: 5px 0;*/
     border-radius: 10px;
 }
 button, input, .wrapper, select{
@@ -74,7 +64,6 @@ input[type=checkbox], input[type=radio]{
     width: 30px;
 }
 .inputWrap{
-/*#inputImage, #inputDots{*/
     position: relative;
 }
 input[type=file]{
@@ -125,9 +114,11 @@ canvas{
     cursor: pointer;
     padding: 0 10px;
     width: 100%;
-    /*opacity: 0.5;*/
     pointer-events: auto;
 }
 hr {
     margin: 5px 0;
+}
+#gsInfo{
+    text-align: center;
 }
