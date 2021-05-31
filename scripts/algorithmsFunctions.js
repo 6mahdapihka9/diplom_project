@@ -1,12 +1,13 @@
-//TODO
-//проверить как оно добавляет точки
-//добавить в конструктор точек проверку на нахождение под поверхностью
-//изменить и проверить метод отрисовки точек (покрытых, непокрытых, под поверхностью
-//добвить ввод точек через кнопку
-//почистить методы отрисовки фигур (точки, треугольника, круга)
-
-
 //INPUT DOTS
+const addDot = ()=>{
+    let x = +getById("x").value, y = +getById("y").value, z = +getById("z").value;
+    if (!isNaN(x) && !isNaN(y) && !isNaN(z)) {
+        let newDot = new Dot(x, y, z);
+        DTC.push(newDot);
+        drawDot(newDot);
+        updateDotsInCheckPath();
+    }
+};
 const inputDots = (input)=>{
     let file = input.files[0];
     let reader = new FileReader();
@@ -20,8 +21,14 @@ const inputDots = (input)=>{
                     typeof (+coords[0]) === "number" &&
                     typeof (+coords[1]) === "number" &&
                     typeof (+coords[2]) === "number") {
-                    let newDot = new Dot(+coords[0], +coords[1], +coords[2]);
-                    DTC.push(newDot);
+
+                    if (!isNaN(+coords[0]) && !isNaN(+coords[1]) && !isNaN(+coords[2])) {
+
+                        let newDot = new Dot(+coords[0], +coords[1], +coords[2]);
+                        DTC.push(newDot);
+                        drawDot(newDot);
+
+                    }
                 } else {
                     alert("Incorrect data!");
                     break;
@@ -31,7 +38,6 @@ const inputDots = (input)=>{
     };
     reader.onloadend = () => {
         updateDotsInCheckPath();
-        drawDotsToCover();
     };
     reader.onerror = function() {
         alert(reader.error);
@@ -49,15 +55,19 @@ const updateDotsInCheckPath = ()=>{
         .map(el => el.classList.remove("disabled"));
 };
 algC.onmousedown = (e) => {
-    if (allowToInputDotsByCursor) {
-        let x = +e.offsetX, y = +e.offsetY;
-        DTC.push(new Dot(x, y, zOfInputedDot));
-        drawDot(new Dot(x, y, ))
-        drawCircle(x, y, 2, null,"black",true);
+    if (getById("allowInput").checked) {
+
+        let x = +e.offsetX, y = +e.offsetY, z = +getById("z").value;
+        if (isNaN(z))
+            return;
+
+        let newDot = new Dot(x, y, z);
+        DTC.push(newDot);
+        drawDot(newDot);
+
         updateDotsInCheckPath();
     }
 };
-
 
 //BUILD GLOBAL SPHERE
 const buildGlobalSphere = ()=>{
@@ -84,39 +94,38 @@ const buildGlobalSphere = ()=>{
             k++;
         }
 
-    console.log(DTC[m], DTC[n]);
     tempX = (DTC[m].x + DTC[n].x)/2;
     tempY = (DTC[m].y + DTC[n].y)/2;
     tempZ = (DTC[m].z + DTC[n].z)/2;
     tempR = (new Dist(DTC[m], DTC[n])).value/2;
-    enoughOne = true;
+
+
+    areAllDotsInsideSphere = true;
     //проверка все ли точки входят в этот круг
     for (let i = 0; i < DTC.length; i++)
-        if ((new Dist(DTC[i], new Dot(tempX, tempY, tempZ))) >
-            Math.round(tempR * tempR * 100000000.0) / 100000000.0 + 0.0001) {
-            enoughOne = false;
+        // console.log((new Dist(DTC[i], new Dot(GS.x, GS.y, GS.z))).value, tempR, Math.round( tempR * 100000000.0) / 100000000.0 + 0.0001);
+
+        if ((new Dist(DTC[i], new Dot(tempX, tempY, tempZ))).value > tempR) {
+            areAllDotsInsideSphere = false;
             break;
-        }
+        } else
+            DTC[i].covered = true;//checkPath(DTC[i], new Dot(tempX, tempY, tempZ));
 
-    Cx = tempX; Cy = tempY; Cz = tempZ; R = tempR;
-    globalSphere = new Sphere(Cx, Cy, Cz, R);
-
-    console.log(R, enoughOne);
     //three dots
-    if (!enoughOne) {
+    if (!areAllDotsInsideSphere) {
         console.log("two are not enough");
         let threeR = max, threeX = 0, threeY = 0, threeZ = 0;
         for (let n = 0; n < DTC.length-2; n++)
             for (let m = n+1; m < DTC.length-1; m++)
                 for (let l = m+1; l < DTC.length; l++) {
-                    let dmx2 = DTC[m].x * DTC[m].x;
-                    let dmy2 = DTC[m].y * DTC[m].y;
+                    let dmx2 = DTC[m].x * DTC[m].x,
+                        dmy2 = DTC[m].y * DTC[m].y,
 
-                    let dlx2 = DTC[l].x * DTC[l].x;
-                    let dly2 = DTC[l].y * DTC[l].y;
+                        dlx2 = DTC[l].x * DTC[l].x,
+                        dly2 = DTC[l].y * DTC[l].y,
 
-                    let dnx2 = DTC[n].x * DTC[n].x;
-                    let dny2 = DTC[n].y * DTC[n].y;
+                        dnx2 = DTC[n].x * DTC[n].x,
+                        dny2 = DTC[n].y * DTC[n].y;
                     Cx = -(DTC[n].y * (dmx2 + dmy2 - dlx2 - dly2) +
                         DTC[m].y * (dlx2 + dly2 - dnx2 - dny2) +
                         DTC[l].y * (dnx2 + dny2 - dmx2 - dmy2)) /
@@ -133,21 +142,22 @@ const buildGlobalSphere = ()=>{
 
                     let newTr = new Triangle(DTC[l], DTC[m], DTC[n]);
                     let tZ = newTr.simpleOperation(new Dot(Cx, Cy, -1000), new Dot(Cx, Cy, 1000));
+
                     if (tZ !== false)
-                        R = (new Dist(tZ, DTC[n])).value/2;
+                        R = (new Dist(tZ, DTC[n])).value;
                     else
                         continue;
 
 
-                    enoughOne = true;
+                    areAllDotsInsideSphere = true;
                     for (let iter = 0; iter < DTC.length; iter++)
                         if ((new Dist(DTC[iter], tZ)).value/2 >
-                            Math.round(R * R * 100000000.0)/100000000.0 + 0.0001) {
-                            enoughOne = false;
+                            Math.round(R  * 100000000.0)/100000000.0 + 0.0001) {
+                            areAllDotsInsideSphere = false;
                             break;
                         }
 
-                    if (enoughOne && R < threeR) {
+                    if (areAllDotsInsideSphere && R < threeR) {
                         threeX = Cx;
                         threeY = Cy;
                         threeZ = tZ.z;
@@ -157,14 +167,18 @@ const buildGlobalSphere = ()=>{
         Cx = threeX;	Cy = threeY;	Cz = threeZ;	R = threeR;
     }
 
-    globalSphere = new Sphere(Cx, Cy, Cz, R);
+    GS = new Sphere(tempX, tempY, tempZ, tempR);
+    getById("gsInfo").innerHTML = `<p>Sphere's info:</p>
+                                        <p>X = ${GS.x}</p>
+                                        <p>Y = ${GS.y}</p>
+                                        <p>Z = ${GS.z}</p>
+                                        <p>R = ${GS.r}</p>`;
     redraw();
 };
 
 
 //CHECK PATH BETWEEN TWO DOTS
-const checkPath = ()=>{
-    //не совпадают ли выбраные точки
+getById("checkPathButton").onclick = ()=>{
     let d1 = DTC[Array.from(getById("dot1").options)
             .filter(option => option.selected)
             .map(option => option.value)[0]],
@@ -172,29 +186,54 @@ const checkPath = ()=>{
             .filter(option => option.selected)
             .map(option => option.value)[0]];
 
+    checkPath(d1, d2,true);
+};
+const checkPath = (d1, d2, htmlRequest)=>{
+
+    let isObstacleOnTheWay = false;
+
+    //не совпадают ли выбраные точки
     if (d1 && d2 && d1 !== d2){
         if (Math.abs(d2.x-d1.x) > Math.abs(d2.y-d1.y)){
+            let startD = (d1.x > d2.x)? d2 : d1, endD = (d1.x < d2.x)? d2 : d1;
 
-            // console.log(d1,d2);
+            end: for (let x = startD.x; x < endD.x; x++){
+                let y = startD.y + ((x-startD.x)/(endD.x-startD.x))*(endD.y-startD.y),
+                    z = startD.z + ((x-startD.x)/(endD.x-startD.x))*(endD.z-startD.z);
 
-            let startD = (d1.x > d2.x)? d2 : d1,
-                endD = (d1.x < d2.x)? d2 : d1;
-            for (let i = startD.x; i < endD.x; i++){
-                let j = startD.y + ((i-startD.x)/(endD.x-startD.x))*(endD.y-startD.y);
-                // console.log(j, i, Math.floor(j / accuracy), Math.floor(i/ accuracy));
-                // console.log(Triangles[Math.floor(j / accuracy)][Math.floor(i / accuracy)]);
-                let TBlock = Triangles[Math.floor(j / accuracy)][Math.floor(i / accuracy)];
-                for (let t in TBlock){
-                    // console.log(TBlock[t]);
-                    drawTriangle(TBlock[t],true,"black");
-                    console.log(TBlock[t].simpleOperation(d1, d2));
+                let TBlock = Triangles[Math.floor(y / accuracy)][Math.floor(x / accuracy)];
+                for (let t of TBlock) {
+                    let newT = new Triangle(t.a, t.b, t.c);
+
+                    isObstacleOnTheWay = newT.simpleOperation(d1, d2) || newT.whichSide(new Dot(x, y, z)) < 0;
+
+                    if (isObstacleOnTheWay)
+                        break end;
+                }
+            }
+        } else {
+            let startD = (d1.y > d2.y)? d2 : d1, endD = (d1.y < d2.y)? d2 : d1;
+
+            end: for (let y = startD.y; y < endD.y; y++){
+                let x = startD.x + ((y-startD.y)/(endD.y-startD.y))*(endD.x-startD.x),
+                    z = startD.z + ((x-startD.x)/(endD.x-startD.x))*(endD.z-startD.z);
+
+                let TBlock = Triangles[Math.floor(y / accuracy)][Math.floor(x / accuracy)];
+                for (let t of TBlock) {
+                    let newT = new Triangle(t.a, t.b, t.c);
+
+                    isObstacleOnTheWay = newT.simpleOperation(d1, d2) || newT.whichSide(new Dot(x, y, z)) < 0;
+
+                    if (isObstacleOnTheWay)
+                        break end;
                 }
             }
 
-        } else {
-            //TODO
-
         }
+        if (htmlRequest)
+            getById("isObstacleBetween").innerText = isObstacleOnTheWay;
+        // console.log(isObstacleOnTheWay);
+        return isObstacleOnTheWay;
     } else {
         alert("You should choose two different dots!");
     }
@@ -206,14 +245,12 @@ const redraw = ()=>{
     algCtx.clearRect(0,0, algC.width, algC.height);
     drawDotsToCover();
     drawGlobalSphere();
-    // drawManySpheres();
 };
 
 
 
 const test = ()=>{
-
-    console.log(new Dot(10, 10, -1000, true));
+    console.log(getById("inputImageButton"));
 };
 
 
