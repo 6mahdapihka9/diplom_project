@@ -1,19 +1,13 @@
 //INPUT IMAGE
 const inputImage = (input)=>{
-console.log("dick");
+
     //try load image
     try {
-        let file = input.files[0];
-        console.log(imgName = file.name);
-        let reader = new FileReader();
-        let src = "";
+        let file = input.files[0], reader = new FileReader(), src = "";
+        imgName = file.name;
         reader.readAsDataURL(file);
         reader.onload = () => { if (typeof(reader.result) === "string") src = reader.result; };
-        reader.onloadend = () => {
-            loadImg(src);
-
-
-        };
+        reader.onloadend = () => { loadImg(src); };
         reader.onerror = () => { alert(reader.error); };
     } catch (e) {
         alert(e);
@@ -31,11 +25,13 @@ const loadImg = (_src)=>{
             return;
         algC.width = relC.width = imgW = img.width;
         algC.height = relC.height = imgH = img.height;
+        getById("canvasInfo").innerHTML = `<p>canvas parameters:</p><p>width: ${relC.width}</p><p>height: ${relC.height}</p>`;
 
         relCtx.drawImage(img, 0, 0, relC.width, relC.height);
 
         IMAGE = img;
 
+        alert("The operation may take some time, do not reload the page!");
 
         try {
             triangulation();
@@ -57,6 +53,7 @@ const loadImg = (_src)=>{
 
         try {
             drawAllTriangles();
+
         } catch (e) {
             alert(e);
             console.log( e );
@@ -99,16 +96,10 @@ const crop = ()=>{
     else
         accuracy = htmlEl.value = 1;
 
+    algC.width = relC.width = imgW - imgW % accuracy + 1;
+    algC.height = relC.height = imgH - imgH % accuracy + 1;
 
-    if (imgW - imgW % accuracy + 1 <= imgW)
-        algC.width = relC.width = imgW - imgW % accuracy + 1;
-    else
-        algC.width = relC.width = imgW - imgW % accuracy + 1 - accuracy;
-
-    if (imgH - imgH % accuracy + 1 <= imgH)
-        algC.height = relC.height = imgH - imgH % accuracy + 1;
-    else
-        algC.height = relC.height = imgH - imgH % accuracy + 1 - accuracy;
+    getById("canvasInfo").innerHTML = `<p>canvas parameters:</p><p>width: ${relC.width}</p><p>height: ${relC.height}</p>`
 
     relCtx = relC.getContext("2d");
     relCtx.drawImage(IMAGE, 0, 0, relC.width, relC.height);
@@ -181,18 +172,6 @@ const creationOfRelief = ()=>{
             ];
         }
 };
-const drawAllTriangles = ()=>{
-
-    relCtx.fillStyle = "white";
-    relCtx.fillRect(0,0, relC.width, relC.height);
-
-    for (let i of Triangles)
-        for (let j of i)
-            for (let t of j)
-                drawTriangle(t, true);
-};
-
-
 
 //INPUT RELIEF
 const inputRelief = (input)=>{
@@ -203,8 +182,6 @@ const inputRelief = (input)=>{
     reader.onload = function() {
         let relief = JSON.parse(reader.result);
 
-        // console.log(relief.accuracy, relief.width, relief.height, relief.Triangles);
-
         maxHeight = relief.maxHeight;
         minHeight = relief.minHeight;
         accuracy = relief.accuracy;
@@ -212,24 +189,23 @@ const inputRelief = (input)=>{
         algC.width = relC.width = imgW = relief.width;
         algC.height = relC.height = imgH = relief.height;
 
+        getById("canvasInfo").innerHTML = `<p>canvas parameters:</p><p>width: ${relC.width}</p><p>height: ${relC.height}</p>`
     }
     reader.onloadend = () => {
-
         drawAllTriangles();
-
         disableInputRelief();
-
     };
     reader.onerror = function() {
         alert(reader.error);
     };
 };
 
-
-
 //EXPORT RELIEF
 const reliefExport = ()=>{
     if (Triangles !== []) {
+
+        alert("The operation may take some time, do not reload the page!");
+
         let width = relC.width, height = relC.height, filename = `relief of ${imgName} (acc = ${accuracy}).txt`;
 
         let text = JSON.stringify({maxHeight, minHeight,accuracy, width, height, Triangles}, null, 4);
@@ -240,4 +216,3 @@ const reliefExport = ()=>{
         exp.href = window.URL.createObjectURL(blob);
     }
 }
-
