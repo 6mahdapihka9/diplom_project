@@ -78,11 +78,11 @@ const disableInputRelief = ()=>{
     getById('dotsBlock').hidden = false;
 
     Array.from(document.getElementsByClassName("operations"))
-        .filter(op => op.id!=="clearButton" && op.id!=="exportReliefDiv" && op.id!=="inputDots")
+        .filter(op => op.id!=="clearButton" && op.id!=="exportReliefDiv" && op.id!=="inputDots" && op.id==="exportDotsDiv")
         .map(op => {op.classList.add("disabled")});
 
     Array.from(document.getElementsByClassName("operations"))
-        .filter(op => op.id=="clearButton" || op.id=="exportReliefDiv" || op.id=="inputDots")
+        .filter(op => op.id=="clearButton" || op.id=="exportReliefDiv" || op.id=="inputDots" || op.id==="exportDotsDiv")
         .map(op => {op.classList.remove("disabled")});
 };
 

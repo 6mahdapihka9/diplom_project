@@ -17,12 +17,7 @@ let Dots = [], Triangles = [];
 
 //algorithm variables
 let DTC = [];
-let dist = [];
 let GS = null;
-let Cx, Cy, Cz, R;
-let tempX, tempY, tempZ, tempR;
-let lenX, lenY;
-let minDistGlob = 100000000;
 let areAllDotsInsideSphere; //is radius big enough to draw a circle
 
 const clear = ()=> {
@@ -44,7 +39,7 @@ const clear = ()=> {
     accuracy = 1;
     Dots = [];
     Triangles = [];
-    GlobalSphere = null;
+    GS = null;
     DTC = [];
 
     //set default values to inputs
@@ -70,6 +65,10 @@ const clear = ()=> {
     Array.from(document.getElementsByClassName("operations"))
         .filter(op => op.id!=="clearButton" && op.id!=="inputImage" && op.id !=="inputRelief")
         .map(op => {op.classList.add("disabled")});
+
+    // Array.from(document.getElementsByClassName("operations"))
+    //     .filter(op => op.id==="clearButton" || op.id==="inputImage" || op.id !=="inputRelief")
+    //     .map(op => {op.classList.remove("disabled")});
 };
 
 //Initiation

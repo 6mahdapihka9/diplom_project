@@ -58,6 +58,7 @@ class Triangle {
             j: ab.z*ac.x - ab.x*ac.z,
             k: ab.x*ac.y - ab.y*ac.x,
             d: (ab.y*ac.z - ab.z*ac.y)*(-_a.x) + (ab.z*ac.x - ab.x*ac.z)*(-_a.y) + (ab.x*ac.y - ab.y*ac.x)*(-_a.z)
+            // d: this.n.i*(-_a.x) + this.n.j*(-_a.y) + this.n.k*(-_a.z)
         };
 
         // Теорема. Если в пространстве задана точка М0(х0, у0, z0), то уравнение плоскости,
