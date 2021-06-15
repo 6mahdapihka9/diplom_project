@@ -347,16 +347,19 @@ const translateTriangleOnPlaneOxy = (A,B,C)=>{
 };
 
 const exportDots = ()=>{
+    if(DTC.length > 0) {
+        let filename = `dots.txt`;
+        let text = '';
+        for (let d of DTC)
+            text += `${d.x} ${d.y} ${d.z}\n`;
 
-    let filename = `dots.txt`;
-    let text = '';
-    for (let d of DTC)
-        text += `${d.x} ${d.y} ${d.z}\n`;
-
-    let blob = new Blob([text], {type: 'text/plain'});
-    let expDots = getById("exportDots");
-    expDots.download = filename;
-    expDots.href = window.URL.createObjectURL(blob);
+        let blob = new Blob([text], {type: 'text/plain'});
+        let expDots = getById("exportDots");
+        expDots.download = filename;
+        expDots.href = window.URL.createObjectURL(blob);
+    } else {
+        alert('There is no dots to export!');
+    }
 };
 
 // //three dots
